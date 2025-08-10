@@ -1,12 +1,10 @@
 <template>
   <div
-    class="flex w-full flex-col items-center gap-3 rounded-lg border border-zinc-200 bg-white p-5"
+    class="flex w-full flex-col items-center gap-3 rounded-lg border border-zinc-200 bg-zinc-100 p-5"
   >
-    <div class="flex w-full items-center justify-start gap-2">
-      <h2>
-        {{ title }}
-      </h2>
-    </div>
+    <span class="font-bold">
+      {{ title }}
+    </span>
     <div class="flex w-full flex-col">
       <RichTextEditor v-model="currentPostHTML" ref="rte" />
     </div>
@@ -54,7 +52,7 @@ const title = computed(() =>
       : "Editing your post..."
     : isComment.value
       ? "Leave a comment!"
-      : "Create a new post!",
+      : "",
 );
 
 const buttonCta = computed(() =>

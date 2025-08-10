@@ -1,5 +1,5 @@
 <template>
-  <div class="flex w-full flex-col gap-3 rounded-lg border-0">
+  <div class="flex w-full flex-col gap-5 rounded-lg border-0">
     <ContentItem v-for="p in wallPosts" :key="p.id" v-bind="p" />
     <!-- To watch for user scroll -->
     <div ref="sentinel" style="height: 1px" />

@@ -30,13 +30,6 @@
         @on-submit-success="handleDoneEditing"
       />
     </section>
-    <section
-      :id="`${id}-top-comments`"
-      v-if="!isComment && comments.length"
-      class="p-3"
-    >
-      <TopComments :comments="comments" />
-    </section>
     <!-- ACTIONS -->
     <section
       :id="`${id}-actions-bar`"
@@ -53,26 +46,35 @@
         class="h-full"
       />
     </section>
+    <!-- TOP COMMENTS -->
+    <Transition name="fade">
+      <section
+        :id="`${id}-top-comments`"
+        v-if="!isComment && comments.length && !isCommentSectionOpen"
+      >
+        <TopComments :comments="comments" />
+      </section>
 
-    <!-- COMMENTS SECTION -->
-    <section
-      :id="`${id}-comments`"
-      v-if="!isComment && isCommentSectionOpen"
-      class="flex flex-col gap-3 border-t border-zinc-200 p-5"
-    >
-      <CreateContentItem
-        content-type="comment"
-        :relatedContentId="id"
-        @on-cancel-commenting="handleToggleCommenting(false)"
-      />
+      <!-- COMMENTS SECTION -->
+      <section
+        :id="`${id}-comments`"
+        v-else-if="!isComment && isCommentSectionOpen"
+        class="flex flex-col gap-3 p-5 border-t border-zinc-200"
+      >
+        <CreateContentItem
+          content-type="comment"
+          :relatedContentId="id"
+          @on-cancel-commenting="handleToggleCommenting(false)"
+        />
 
-      <ContentItem v-for="c in comments" v-bind="c" is-comment />
-    </section>
+        <ContentItem v-for="c in comments" v-bind="c" is-comment />
+      </section>
+    </Transition>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, Transition } from "vue";
 import type { ContentItemT } from "../types/types";
 import { useUserStore } from "../store/user";
 import { useContentStore } from "../store/content";
@@ -119,4 +121,6 @@ const handleDoneEditing = () => {
 };
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+@use "../styles/transitions.scss";
+</style>

@@ -12,7 +12,7 @@
 
       <span class="flex flex-col">
         <span class="text-xs"> Logged in as </span>
-        <Transition name="fade" mode="out-in">
+        <Transition name="slide-fade" mode="out-in">
           <span
             class="text-sm font-bold"
             :class="`text-${userStore.color.color500}`"

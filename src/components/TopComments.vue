@@ -1,5 +1,5 @@
 <template>
-  <div class="flex w-full flex-col gap-7 p-3">
+  <div class="flex w-full flex-col gap-7 border-t border-zinc-200 p-5 pt-8">
     <TopComment
       v-for="(tc, i) in topTwoComments"
       :key="`${tc.id}-top-comment`"
