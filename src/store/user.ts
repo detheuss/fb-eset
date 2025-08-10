@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
-import type { User } from "../types/types";
+import type { UserT } from "../types/types";
 import { computed, ref } from "vue";
-import { TEST_USERS } from "../test-data/users";
+import { TEST_USERS } from "../test-data/testUsers";
 
 export const useUserStore = defineStore(
   "user",
@@ -20,11 +20,11 @@ export const useUserStore = defineStore(
       color700: `${activeUser.value.colorBase}-700`,
     }));
 
-    const setActiveUser = (user: User) => {
+    const setActiveUser = (user: UserT) => {
       activeUser.value = user;
     };
 
-    const getActiveUser = (): User => activeUser.value;
+    const getActiveUser = (): UserT => activeUser.value;
 
     return {
       activeUser,

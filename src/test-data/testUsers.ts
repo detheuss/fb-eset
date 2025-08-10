@@ -1,18 +1,18 @@
-import type { User } from "../types/types";
+import type { UserT } from "../types/types";
 
-const U1: User = {
+const U1: UserT = {
   id: "user-1",
   username: "Rado",
   colorBase: "amber",
 };
 
-const U2: User = {
+const U2: UserT = {
   id: "user-2",
   username: "Marienka",
   colorBase: "fuchsia",
 };
 
-const U3: User = {
+const U3: UserT = {
   id: "user-3",
   username: "Jožko",
   colorBase: "emerald",

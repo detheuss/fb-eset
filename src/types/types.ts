@@ -1,17 +1,27 @@
-export type User = {
+export type UserT = {
   id: string;
   username: string;
-  colorBase: string
+  colorBase: string;
 };
 
-export type Post = {
+export type PostT = {
   id: string;
-  poster: User;
-  date: string;
-  time: string;
+  poster: UserT;
+  dateTime: string;
   postText: string;
-  comments: Comment[];
-  likeData: Set<User>;
+  likeData: string[];
+  comments?: PostT[];
+  isComment?: boolean;
 };
 
-export type Comment = Omit<Post, "comments">;
+export type ContentItemTypeT = "post" | "comment";
+
+export type ContentItemT = {
+  id: string;
+  author: UserT;
+  dateTime: string;
+  htmlContent: string;
+  likeData: string[];
+  type: ContentItemTypeT;
+  relatedContentItemId?: string;
+};

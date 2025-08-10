@@ -44,20 +44,5 @@ export default {
     "active:bg-emerald-700",
     "disabled:bg-emerald-300",
     "focus:ring-emerald-400",
-
-    // sky
-    "text-sky-500",
-    "bg-sky-50",
-    "bg-sky-300",
-    "bg-sky-500",
-    "bg-sky-600",
-    "bg-sky-700",
-    "border-sky-500",
-    "border-sky-200",
-    "ring-sky-400",
-    "hover:bg-sky-600",
-    "active:bg-sky-700",
-    "disabled:bg-sky-300",
-    "focus:ring-sky-400",
   ],
 };

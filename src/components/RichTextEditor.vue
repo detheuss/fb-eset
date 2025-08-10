@@ -4,7 +4,6 @@
       placeholder="What's on your mind?"
       v-model:content="postText"
       contentType="html"
-      class="bg-white"
     />
   </div>
 </template>
@@ -23,6 +22,6 @@ const postText = defineModel<string>();
   @apply rounded-lg border border-zinc-200 bg-gradient-to-r from-zinc-200 to-white;
 }
 .quill-override :deep(.ql-container.ql-snow) {
-  @apply rounded-lg border border-zinc-200;
+  @apply rounded-lg border border-zinc-200 bg-white;
 }
 </style>

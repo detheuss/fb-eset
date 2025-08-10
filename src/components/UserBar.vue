@@ -10,8 +10,8 @@
         :class="`text-${userStore.color.color500}`"
       />
 
-      <span class="flex flex-col text-xs">
-        <span> Logged in as </span>
+      <span class="flex flex-col">
+        <span class="text-xs"> Logged in as </span>
         <Transition name="fade" mode="out-in">
           <span
             class="text-sm font-bold"
@@ -40,7 +40,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { Icon } from "@iconify/vue";
-import { TEST_USERS } from "../test-data/users";
+import { TEST_USERS } from "../test-data/testUsers";
 import { useUserStore } from "../store/user";
 
 const users = [...TEST_USERS];
