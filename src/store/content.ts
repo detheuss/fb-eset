@@ -66,8 +66,6 @@ export const useContentStore = defineStore(
 
     // DELETE
     const deleteContentItem = (contentItemId: string) => {
-      debugger;
-
       // delete the post
       contentItems.value = contentItems.value.filter(
         (ci) =>

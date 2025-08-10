@@ -14,8 +14,20 @@
     </section>
 
     <!-- SANITIZED POST HTML CONTENT -->
-    <section :id="`${id}-content`" class="p-5" v-html="htmlContent" />
-
+    <section
+      v-if="!isEditing"
+      :id="`${id}-content`"
+      class="p-5"
+      v-html="htmlContent"
+    />
+    <CreateContentItem
+      v-else
+      :content-type="type"
+      :relatedContentId="relatedContentItemId"
+      is-editing
+      :edited-content-item="props"
+      @on-submit-success="handleDoneEditing"
+    />
     <!-- ACTIONS -->
     <section :id="`${id}-actions-bar`">
       <ContentItemActionsBar
@@ -25,6 +37,7 @@
         :likeData="likeData"
         :author="author"
         v-model:is-comment-open="isCommentSectionOpen"
+        v-model:is-editing="isEditing"
       />
     </section>
 
@@ -36,7 +49,7 @@
     >
       <CreateContentItem
         content-type="comment"
-        :related-post-id="id"
+        :relatedContentId="id"
         @on-cancel-commenting="handleToggleCommenting(false)"
       />
 
@@ -70,6 +83,8 @@ const isOwner = computed(() => userStore.activeUser.id === props.author.id);
 
 const isCommentSectionOpen = ref(false);
 
+const isEditing = ref(false);
+
 const comments = computed(() => {
   if (isComment.value) return [];
   const relatedComments = contentStore.comments.filter(
@@ -84,6 +99,10 @@ const handleToggleCommenting = (value: boolean) =>
 const readableDateTime = computed(() =>
   getReadableDateTimeFromISOString(props.dateTime),
 );
+
+const handleDoneEditing = () => {
+  isEditing.value = false;
+};
 </script>
 
 <style scoped></style>

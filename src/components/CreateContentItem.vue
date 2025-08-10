@@ -4,7 +4,7 @@
   >
     <div class="flex w-full items-center justify-start gap-2">
       <h2>
-        {{ isComment ? "Leave a comment!" : "Share Your Thoughts!" }}
+        {{ title }}
       </h2>
     </div>
     <div class="flex w-full flex-col">
@@ -29,12 +29,28 @@ import RichTextEditor from "./RichTextEditor.vue";
 import { useUserStore } from "../store/user";
 import { useContentStore } from "../store/content";
 
-const props = defineProps<{
-  contentType: ContentItemTypeT;
-  relatedPostId?: string;
+const emit = defineEmits<{
+  (e: "onSubmitSuccess"): void;
 }>();
 
-const currentPostHTML = ref("");
+const props = defineProps<{
+  contentType: ContentItemTypeT;
+  relatedContentId?: string;
+  isEditing?: boolean;
+  editedContentItem?: ContentItemT;
+}>();
+
+const title = computed(() =>
+  props.isEditing
+    ? isComment.value
+      ? "Editing your comment..."
+      : "Editing your post..."
+    : isComment.value
+      ? "Leave a comment!"
+      : "Create a new post!",
+);
+
+const currentPostHTML = ref(props.editedContentItem?.htmlContent ?? "");
 
 const userStore = useUserStore();
 
@@ -43,7 +59,6 @@ const contentStore = useContentStore();
 const isComment = computed(() => props.contentType === "comment");
 
 const handleSubmit = () => {
-  debugger;
   if (!currentPostHTML.value) return;
 
   const user = userStore.activeUser;
@@ -52,23 +67,34 @@ const handleSubmit = () => {
 
   const dateTimeISOString = new Date().toISOString();
 
-  const contentItemDto: ContentItemT = {
-    dateTime: dateTimeISOString,
-    id: crypto.randomUUID(),
-    likeData: [],
-    author: user,
-    htmlContent: currentPostHTML.value,
-    type: props.contentType,
-  };
+  const contentItemDto: ContentItemT =
+    props.isEditing && props.editedContentItem
+      ? {
+          ...props.editedContentItem,
+          htmlContent: currentPostHTML.value,
+          dateTime: dateTimeISOString,
+        }
+      : {
+          dateTime: dateTimeISOString,
+          id: crypto.randomUUID(),
+          likeData: [],
+          author: user,
+          htmlContent: currentPostHTML.value,
+          type: props.contentType,
+        };
 
   if (isComment.value)
-    contentItemDto.relatedContentItemId = props.relatedPostId;
+    contentItemDto.relatedContentItemId = props.relatedContentId;
 
   try {
-    contentStore.createContentItem(contentItemDto);
+    props.isEditing
+      ? contentStore.editContentItem(contentItemDto)
+      : contentStore.createContentItem(contentItemDto);
   } catch (e) {
-    console.error(e);
+    throw e;
   }
+
+  emit("onSubmitSuccess");
 };
 </script>
 

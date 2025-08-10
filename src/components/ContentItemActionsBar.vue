@@ -28,8 +28,9 @@
     </div>
     <BaseButton
       is-icon-button
-      icon-name="tabler:pencil"
+      :icon-name="isEditing ? 'tabler:x' : 'tabler:pencil'"
       class="ms-auto"
+      @click="handleToggleEditing"
       v-if="isOwnPost"
     />
     <BaseButton
@@ -70,12 +71,20 @@ const isCommentSectionOpen = defineModel<boolean>("isCommentOpen", {
   default: false,
 });
 
+const isEditing = defineModel<boolean>("isEditing", {
+  default: false,
+});
+
 const handleToggleLikePost = () => {
   contentStore.toggleLike(userStore.activeUser.id, props.id);
 };
 
 const handleToggleCommenting = () => {
   isCommentSectionOpen.value = !isCommentSectionOpen.value;
+};
+
+const handleToggleEditing = () => {
+  isEditing.value = !isEditing.value;
 };
 
 const handleDeletePost = () => {
