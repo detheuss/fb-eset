@@ -1,30 +1,37 @@
 <template>
-  <div
-    class="flex w-full items-center justify-start gap-4 border-t border-zinc-200 bg-zinc-100 p-3"
-  >
+  <div class="flex w-full items-center justify-start gap-4 p-3">
     <div class="flex items-center justify-center gap-2 text-xs">
-      <span class="text-zinc-500">
-        {{ likeData.length }}
-      </span>
       <BaseButton
         is-icon-button
         :icon-name="hasLiked ? 'tabler:thumb-up-filled' : 'tabler:thumb-up'"
         @click="handleToggleLikePost"
       />
+      <Transition name="fade" mode="out-in">
+        <BaseButton
+          v-if="areReactionsHidden"
+          is-icon-button
+          icon-name="tabler:eye-off"
+          class="!text-md !border-none !bg-zinc-200 !text-zinc-400"
+          @click="handleShowReactions"
+        />
+        <span v-else class="text-zinc-500">
+          {{ likeData.length }}
+        </span>
+      </Transition>
     </div>
 
     <div
       class="flex items-center justify-center gap-2 text-xs"
       v-if="!isComment"
     >
-      <span class="text-zinc-500">
-        {{ comments?.length ?? 0 }}
-      </span>
       <BaseButton
         is-icon-button
         :icon-name="isCommentSectionOpen ? 'tabler:x' : 'tabler:message-filled'"
         @click="handleToggleCommenting"
       />
+      <span class="text-zinc-500">
+        {{ comments?.length ?? 0 }}
+      </span>
     </div>
     <BaseButton
       is-icon-button
@@ -43,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue"; // ref removed (no local refs now)
+import { computed, ref } from "vue"; // ref removed (no local refs now)
 import { useUserStore } from "../store/user";
 import type { ContentItemT, UserT } from "../types/types";
 import BaseButton from "./BaseButton.vue";
@@ -52,7 +59,7 @@ import { useContentStore } from "../store/content";
 const contentStore = useContentStore();
 const userStore = useUserStore();
 
-export type ContentItemActionsBarProps = {
+export type ActionsBarPropsT = {
   id: string;
   isComment: boolean;
   comments: ContentItemT[];
@@ -60,7 +67,7 @@ export type ContentItemActionsBarProps = {
   author: UserT;
 };
 
-const props = defineProps<ContentItemActionsBarProps>();
+const props = defineProps<ActionsBarPropsT>();
 
 const isOwnPost = computed(() => userStore.activeUser.id === props.author.id);
 const hasLiked = computed(() =>
@@ -75,6 +82,8 @@ const isEditing = defineModel<boolean>("isEditing", {
   default: false,
 });
 
+const areReactionsHidden = ref(props.isComment);
+
 const handleToggleLikePost = () => {
   contentStore.toggleLike(userStore.activeUser.id, props.id);
 };
@@ -85,6 +94,10 @@ const handleToggleCommenting = () => {
 
 const handleToggleEditing = () => {
   isEditing.value = !isEditing.value;
+};
+
+const handleShowReactions = () => {
+  areReactionsHidden.value = false;
 };
 
 const handleDeletePost = () => {

@@ -5,11 +5,12 @@
   >
     <!-- AUTHOR INFO -->
     <section :id="`${id}-author-bar`">
-      <ContentItemAuthorBar
+      <AuthorBar
         :is-comment="isComment"
         :is-owner="isOwner"
         :date-time="readableDateTime"
         :author="author"
+        :thumbnail-src="thumbnailSrc"
       />
     </section>
 
@@ -20,17 +21,28 @@
       class="p-5"
       v-html="htmlContent"
     />
-    <CreateContentItem
-      v-else
-      :content-type="type"
-      :relatedContentId="relatedContentItemId"
-      is-editing
-      :edited-content-item="props"
-      @on-submit-success="handleDoneEditing"
-    />
+    <section v-else :id="`${id}-editing`" class="p-5">
+      <CreateContentItem
+        :content-type="type"
+        :relatedContentId="relatedContentItemId"
+        is-editing
+        :edited-content-item="props"
+        @on-submit-success="handleDoneEditing"
+      />
+    </section>
+    <section
+      :id="`${id}-top-comments`"
+      v-if="!isComment && comments.length"
+      class="p-3"
+    >
+      <TopComments :comments="comments" />
+    </section>
     <!-- ACTIONS -->
-    <section :id="`${id}-actions-bar`">
-      <ContentItemActionsBar
+    <section
+      :id="`${id}-actions-bar`"
+      class="flex h-16 items-center justify-start border-t border-zinc-200 bg-zinc-100"
+    >
+      <ActionsBar
         :id="id"
         :is-comment="isComment"
         :comments="comments"
@@ -38,6 +50,7 @@
         :author="author"
         v-model:is-comment-open="isCommentSectionOpen"
         v-model:is-editing="isEditing"
+        class="h-full"
       />
     </section>
 
@@ -67,9 +80,11 @@ import {
   getReadableDateTimeFromISOString,
   sortByDateTime,
 } from "../utils/content";
-import ContentItemActionsBar from "./ContentItemActionsBar.vue";
-import ContentItemAuthorBar from "./ContentItemAuthorBar.vue";
+import ActionsBar from "./ActionsBar.vue";
+import AuthorBar from "./AuthorBar.vue";
 import CreateContentItem from "./CreateContentItem.vue";
+import TopComments from "./TopComments.vue";
+import BaseButton from "./BaseButton.vue";
 
 const userStore = useUserStore();
 
@@ -78,6 +93,8 @@ const contentStore = useContentStore();
 const props = defineProps<ContentItemT>();
 
 const isComment = computed(() => props.type === "comment");
+
+const areCommentReactionsShown = ref(!isComment.value); // we hide reactions by default for comments
 
 const isOwner = computed(() => userStore.activeUser.id === props.author.id);
 
@@ -99,6 +116,10 @@ const handleToggleCommenting = (value: boolean) =>
 const readableDateTime = computed(() =>
   getReadableDateTimeFromISOString(props.dateTime),
 );
+
+const handleToggleCommentReactions = () => {
+  areCommentReactionsShown.value = !areCommentReactionsShown.value;
+};
 
 const handleDoneEditing = () => {
   isEditing.value = false;

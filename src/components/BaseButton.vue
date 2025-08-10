@@ -1,11 +1,14 @@
 <template>
   <button
     v-if="isIconButton"
-    class="base-button aspect-square border bg-white p-2 hover:bg-zinc-200"
+    class="base-button border bg-white p-2 hover:bg-zinc-200"
     :class="[iconButtonTextClass, iconButtonBorderClass, focusRingClass]"
     v-bind="props.buttonAttrs"
   >
-    <Icon v-if="iconName" :icon="iconName" class="text-xl" />
+    <div class="flex gap-2 justify-center items-center">
+      <Icon v-if="iconName" :icon="iconName" class="text-xl" />
+      <span class="text-xs font-light" v-if="cta">{{ cta }}</span>
+    </div>
   </button>
   <button
     v-else

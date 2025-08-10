@@ -16,7 +16,15 @@ export const sortByDateTime = (posts: ContentItemT[]) => {
   });
 };
 
-export const getReadableDateTimeFromISOString = (dateTime: string | undefined) => {
+export const sortCommentsByLikes = (items: ContentItemT[]) => {
+  return [...items]
+    .filter((item) => item.type === "comment")
+    .sort((a, b) => b.likeData.length - a.likeData.length);
+};
+
+export const getReadableDateTimeFromISOString = (
+  dateTime: string | undefined,
+) => {
   if (!dateTime) return { date: "", time: "" };
   const dt = new Date(dateTime);
   const date = dt.toLocaleDateString(undefined, {

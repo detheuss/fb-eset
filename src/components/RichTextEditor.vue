@@ -4,6 +4,7 @@
       placeholder="What's on your mind?"
       v-model:content="postText"
       contentType="html"
+      ref="editorRef"
     />
   </div>
 </template>
@@ -11,8 +12,23 @@
 <script setup lang="ts">
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
+import { ref } from "vue";
 
 const postText = defineModel<string>();
+const editorRef = ref<InstanceType<typeof QuillEditor> | null>(null);
+
+// an unfortunate workaround - quill retains state and ignores binding.
+const hardReset = () => {
+  postText.value = "";
+  const quill = editorRef.value?.getQuill();
+  if (quill) {
+    quill.setText("");
+    quill.history.clear();
+    quill.setSelection(0, 0);
+  }
+};
+
+defineExpose({ hardReset });
 </script>
 
 <style scoped>

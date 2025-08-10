@@ -8,21 +8,28 @@
       </h2>
     </div>
     <div class="flex w-full flex-col">
-      <RichTextEditor v-model="currentPostHTML" />
+      <RichTextEditor v-model="currentPostHTML" ref="rte" />
+    </div>
+    <div
+      v-if="!isComment"
+      class="flex w-full items-center justify-start gap-3 ps-2"
+    >
+      <span class="text-sm font-bold whitespace-nowrap">Thumbnail URL:</span>
+      <input
+        v-model.trim="thumbnailSrc"
+        type="text"
+        class="h-11 w-full rounded-lg border border-zinc-200 bg-white p-3"
+      />
     </div>
 
     <div class="flex w-full items-center justify-start gap-3">
-      <BaseButton
-        @click="handleSubmit"
-        :cta="isComment ? 'Post a Comment' : 'Create a Post'"
-        class="w-full"
-      />
+      <BaseButton @click="handleSubmit" :cta="buttonCta" class="w-full" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, nextTick, ref } from "vue";
 import BaseButton from "./BaseButton.vue";
 import type { ContentItemT, ContentItemTypeT } from "../types/types";
 import RichTextEditor from "./RichTextEditor.vue";
@@ -50,7 +57,19 @@ const title = computed(() =>
       : "Create a new post!",
 );
 
+const buttonCta = computed(() =>
+  props.isEditing
+    ? isComment.value
+      ? "Save Comment"
+      : "Save Post"
+    : isComment.value
+      ? "Add a Comment"
+      : "Create a Post",
+);
+
 const currentPostHTML = ref(props.editedContentItem?.htmlContent ?? "");
+
+const thumbnailSrc = ref(props.editedContentItem?.thumbnailSrc ?? "");
 
 const userStore = useUserStore();
 
@@ -58,7 +77,9 @@ const contentStore = useContentStore();
 
 const isComment = computed(() => props.contentType === "comment");
 
-const handleSubmit = () => {
+const rte = ref<InstanceType<typeof RichTextEditor> | null>(null);
+
+const handleSubmit = async () => {
   if (!currentPostHTML.value) return;
 
   const user = userStore.activeUser;
@@ -72,6 +93,7 @@ const handleSubmit = () => {
       ? {
           ...props.editedContentItem,
           htmlContent: currentPostHTML.value,
+          thumbnailSrc: thumbnailSrc.value,
           dateTime: dateTimeISOString,
         }
       : {
@@ -80,6 +102,7 @@ const handleSubmit = () => {
           likeData: [],
           author: user,
           htmlContent: currentPostHTML.value,
+          thumbnailSrc: thumbnailSrc.value,
           type: props.contentType,
         };
 
@@ -93,6 +116,11 @@ const handleSubmit = () => {
   } catch (e) {
     throw e;
   }
+
+  currentPostHTML.value = "";
+  // an unfortunate workaround - quill retains state and ignores binding.
+  await nextTick();
+  rte.value?.hardReset();
 
   emit("onSubmitSuccess");
 };
