@@ -84,7 +84,6 @@ import ActionsBar from "./ActionsBar.vue";
 import AuthorBar from "./AuthorBar.vue";
 import CreateContentItem from "./CreateContentItem.vue";
 import TopComments from "./TopComments.vue";
-import BaseButton from "./BaseButton.vue";
 
 const userStore = useUserStore();
 
@@ -93,8 +92,6 @@ const contentStore = useContentStore();
 const props = defineProps<ContentItemT>();
 
 const isComment = computed(() => props.type === "comment");
-
-const areCommentReactionsShown = ref(!isComment.value); // we hide reactions by default for comments
 
 const isOwner = computed(() => userStore.activeUser.id === props.author.id);
 
@@ -116,10 +113,6 @@ const handleToggleCommenting = (value: boolean) =>
 const readableDateTime = computed(() =>
   getReadableDateTimeFromISOString(props.dateTime),
 );
-
-const handleToggleCommentReactions = () => {
-  areCommentReactionsShown.value = !areCommentReactionsShown.value;
-};
 
 const handleDoneEditing = () => {
   isEditing.value = false;
