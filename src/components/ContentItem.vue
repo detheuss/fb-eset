@@ -59,7 +59,7 @@
       <section
         :id="`${id}-comments`"
         v-else-if="!isComment && isCommentSectionOpen"
-        class="flex flex-col gap-3 p-5 border-t border-zinc-200"
+        class="flex flex-col gap-3 border-t border-zinc-200 p-5"
       >
         <CreateContentItem
           content-type="comment"
